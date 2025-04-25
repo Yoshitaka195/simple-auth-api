@@ -11,13 +11,12 @@ RUN apk add --no-cache \
 WORKDIR /usr/src/app
 COPY package*.json ./
 
-RUN npm install canvas --build-from-source
 RUN npm install
 
 COPY . .
 
 RUN npm run prisma:generate
 
-EXPOSE 3000
+EXPOSE 3333
 
 CMD [ "npm", "run", "start" ]
