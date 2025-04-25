@@ -1,0 +1,75 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+  "files": {
+    "include": ["**/*.ts"],
+    "ignore": [
+      ".circleci",
+      ".devcontainer",
+      ".github",
+      ".husky",
+      ".vscode",
+      "dist",
+      "hygen",
+      "node_modules",
+      ".hygen.js",
+      "nest-cli.json",
+      "package.json"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "useEditorconfig": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80,
+    "attributePosition": "auto",
+    "bracketSpacing": true,
+    "ignore": ["**/schema.graphql"]
+  },
+  "organizeImports": { "enabled": true },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "useLiteralKeys": "off",
+        "useOptionalChain": "warn",
+        "noForEach": "warn",
+        "noStaticOnlyClass": "off",
+        "noThisInStatic": "off",
+        "noExcessiveNestedTestSuites": "warn"
+      },
+      "correctness": {
+        "noUnusedVariables": "off"
+      },
+      "style": {
+        "useImportType": "off",
+        "useNodejsImportProtocol": "off",
+        "useTemplate": "warn",
+        "noUnusedTemplateLiteral": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noConfusingVoidType": "warn",
+        "noDuplicateTestHooks": "warn",
+        "noImplicitAnyLet": "warn"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn"
+      }
+    },
+    "ignore": ["**/schema.graphql"]
+  },
+  "javascript": {
+    "formatter": {
+      "semicolons": "always",
+      "quoteStyle": "single"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
+}

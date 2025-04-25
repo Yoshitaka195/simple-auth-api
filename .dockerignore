@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+dist
+
+.env*
+
+.editorconfig
+.eslintrc.js
+.prettierrc
+README.md
+
+.git
+.gitignore
+.dockerignore
+
+template.yml

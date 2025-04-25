@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 23
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Logging in to Docker Hub...
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  build:
+    commands:
+      - echo "Building application image"
+      - docker build -t $IMAGE .
+      - docker tag $IMAGE $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE
+      - echo "Building migration image"
+      - docker build -f Dockerfile.migrate -t $IMAGE-migrate .
+      - docker tag $IMAGE-migrate $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE-migrate
+      - echo "Building seed image"
+      - docker build -f Dockerfile.seed -t $IMAGE-seed .
+      - docker tag $IMAGE-seed $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE-seed
+  post_build:
+    commands:
+      - echo "Pushing application image"
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE
+      - echo "Pushing migration image"
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE-migrate
+      - echo "Pushing seed image"
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE-seed
+      - echo "Creating imagedefinitions.json"
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE > imagedefinitions.json
+      - echo "Running migrations"
+artifacts:
+  files: imagedefinitions.json

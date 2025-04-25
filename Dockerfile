@@ -1,0 +1,23 @@
+FROM node:18.1.0-alpine3.14
+
+RUN apk add --no-cache \
+    build-base \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev
+
+WORKDIR /usr/src/app
+COPY package*.json ./
+
+RUN npm install canvas --build-from-source
+RUN npm install
+
+COPY . .
+
+RUN npm run prisma:generate
+
+EXPOSE 3000
+
+CMD [ "npm", "run", "start" ]

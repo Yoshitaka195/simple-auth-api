@@ -1,0 +1,417 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("RAKBIL_TEST_DB_URL")
+}
+
+enum ConcertCategory {
+  ORCHESTRA
+  BRASS_BAND
+  ENSEMBLE
+  CHORUS
+}
+
+enum Region {
+  HOKKAIDO
+  TOHOKU
+  KANTO
+  CHUBU
+  KINKI
+  CHUGOKU
+  SHIKOKU
+  KYUSHU
+  OKINAWA
+}
+
+enum Prefecture {
+  HOKKAIDO
+  AOMORI
+  IWATE
+  MIYAGI
+  AKITA
+  YAMAGATA
+  FUKUSHIMA
+  IBARAKI
+  TOCHIGI
+  GUNMA
+  SAITAMA
+  CHIBA
+  TOKYO
+  KANAGAWA
+  NIIGATA
+  TOYAMA
+  ISHIKAWA
+  FUKUI
+  YAMANASHI
+  NAGANO
+  GIFU
+  SHIZUOKA
+  AICHI
+  MIE
+  SHIGA
+  KYOTO
+  OSAKA
+  HYOGO
+  NARA
+  WAKAYAMA
+  TOTTORI
+  SHIMANE
+  OKAYAMA
+  HIROSHIMA
+  YAMAGUCHI
+  TOKUSHIMA
+  KAGAWA
+  EHIME
+  KOCHI
+  FUKUOKA
+  SAGA
+  NAGASAKI
+  KUMAMOTO
+  OITA
+  MIYAZAKI
+  KAGOSHIMA
+  OKINAWA
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Seed {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(6)
+
+  @@map("_prisma_custom_seeds")
+}
+
+model Facility {
+  id                   Int                   @id @default(autoincrement())
+  name                 String                @db.VarChar(100)
+  region               Region
+  prefecture           Prefecture
+  address              String                @db.VarChar(255)
+  halls                Hall[]
+  distributionSettings DistributionSetting[]
+
+  @@map("facilities")
+}
+
+model Hall {
+  id          Int       @id @default(autoincrement())
+  facilityId  Int       @map("facility_id")
+  name        String    @db.VarChar(100)
+  seatsNumber Int       @map("seats_number")
+  facility    Facility  @relation(fields: [facilityId], references: [id])
+  concerts    Concert[]
+
+  @@index([facilityId])
+  @@map("halls")
+}
+
+model Auth0ProviderAccount {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @db.VarChar(16)
+  accountId String   @unique @map("account_id") @db.VarChar(100)
+  name      String?  @db.VarChar(100)
+  email     String?  @db.VarChar(100)
+  imageUrl  String?  @map("image_url") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  group     Group?
+
+  @@map("auth_0_provider_accounts")
+}
+
+model Group {
+  id                     Int                  @id @default(autoincrement())
+  uid                    String               @unique @db.VarChar(16)
+  auth0ProviderAccountId Int                  @unique @map("auth_0_provider_account_id")
+  name                   String               @db.VarChar(100)
+  email                  String               @db.VarChar(100)
+  tel                    String?              @db.VarChar(100)
+  imageUrl               String?              @map("image_url") @db.Text
+  createdAt              DateTime             @default(now()) @map("created_at") @db.DateTime(6)
+  groupDiscount          GroupDiscount?
+  auth0ProviderAccount   Auth0ProviderAccount @relation(fields: [auth0ProviderAccountId], references: [id])
+  concerts               Concert[]
+  orders                 Order[]
+
+  @@map("groups")
+}
+
+model GroupDiscount {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @db.VarChar(16)
+  groupId   Int      @unique @map("group_id")
+  group     Group    @relation(fields: [groupId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(6)
+
+  @@index([groupId])
+  @@map("group_discounts")
+}
+
+model Concert {
+  id                   Int                   @id @default(autoincrement())
+  uid                  String                @unique @db.VarChar(16)
+  groupId              Int                   @map("group_id")
+  hallId               Int                   @map("hall_id")
+  category             ConcertCategory       @map("category")
+  name                 String                @db.VarChar(100)
+  openTime             DateTime              @map("open_time") @db.DateTime(0)
+  startTime            DateTime              @map("start_time") @db.DateTime(0)
+  endTime              DateTime              @map("end_time") @db.DateTime(0)
+  createdAt            DateTime              @default(now()) @map("created_at") @db.DateTime(6)
+  group                Group                 @relation(fields: [groupId], references: [id])
+  hall                 Hall                  @relation(fields: [hallId], references: [id])
+  originPamphlet       OriginPamphlet?
+  editedPamphlet       EditedPamphlet?
+  pamphletQR           PamphletQR?
+  order                Order?
+  flyer                Flyer?
+  insertionSetting     InsertionSetting?
+  insertionSummary     InsertionSummary?
+  stripePaymentIntents StripePaymentIntent[]
+
+  @@index([groupId])
+  @@index([hallId])
+  @@map("concerts")
+}
+
+model InsertionSetting {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @db.VarChar(16)
+  concertId Int      @unique @map("concert_id")
+  page      Int
+  perPage   Int      @map("per_page") 
+  price     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  concert   Concert  @relation(fields: [concertId], references: [id])
+
+  @@map("insertion_settings")
+}
+
+model InsertionSummary {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @db.VarChar(16)
+  concertId Int      @unique @map("concert_id")
+  maxCount       Int
+  currentCount     Int
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  concert   Concert  @relation(fields: [concertId], references: [id])
+
+  @@map("insertion_summaries")
+}
+
+model OriginPamphlet {
+  id             Int             @id @default(autoincrement())
+  uid            String          @unique @db.VarChar(16)
+  concertId      Int             @unique @map("concert_id")
+  key            String          @db.VarChar(255)
+  versionId      String          @map("version_id") @db.VarChar(100)
+  createdAt      DateTime        @default(now()) @map("created_at") @db.DateTime(6)
+  concert        Concert         @relation(fields: [concertId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  insertedImages InsertedImage[]
+
+  @@index([concertId])
+  @@map("origin_pamphlets")
+}
+
+model EditedPamphlet {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @db.VarChar(16)
+  concertId Int      @unique @map("concert_id")
+  key       String   @db.VarChar(255)
+  versionId String   @map("version_id") @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  concert   Concert  @relation(fields: [concertId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([concertId])
+  @@map("edited_pamphlets")
+}
+
+model PamphletQR {
+  id          Int      @id @default(autoincrement())
+  uid         String   @unique @db.VarChar(16)
+  concertId   Int      @unique @map("concert_id")
+  key         String   @db.Text
+  versionId   String   @map("version_id") @db.VarChar(100)
+  internalUrl String   @map("internal_url") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  concert     Concert  @relation(fields: [concertId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([concertId])
+  @@map("pamphlet_qrs")
+}
+
+model Flyer {
+  id                   Int                   @id @default(autoincrement())
+  uid                  String                @unique @db.VarChar(16)
+  key                  String                @db.VarChar(255)
+  concertId            Int                   @unique @map("concert_id")
+  createdAt            DateTime              @default(now()) @map("created_at") @db.DateTime(6)
+  concert              Concert               @relation(fields: [concertId], references: [id])
+  order                Order?
+  distributionSettings DistributionSetting[]
+  InsertedFlyers       InsertedFlyer[]
+
+  @@index([concertId])
+  @@map("flyers")
+}
+
+model StripePaymentIntent {
+  id           Int    @id @default(autoincrement())
+  uid          String @unique @db.VarChar(16)
+  concertId    Int    @map("concert_id")
+  externalId   String @unique @map("external_id") @db.VarChar(255)
+  clientSecret String @map("client_secret") @db.VarChar(255)
+
+  createdAt          DateTime                  @default(now()) @map("created_at") @db.DateTime(6)
+  concert            Concert?                  @relation(fields: [concertId], references: [id])
+  orderStripePayment OrderStripePaymentIntent?
+
+  @@index([concertId])
+  @@map("stripe_payment_intents")
+}
+
+model Order {
+  id                       Int                       @id @default(autoincrement())
+  uid                      String                    @unique @db.VarChar(16)
+  groupId                  Int                       @map("group_id")
+  concertId                Int                       @unique @map("concert_id")
+  flyerId                  Int                       @unique @map("flyer_id")
+  createdAt                DateTime                  @default(now()) @map("created_at") @db.DateTime(6)
+  group                    Group                     @relation(fields: [groupId], references: [id])
+  concert                  Concert                   @relation(fields: [concertId], references: [id])
+  flyer                    Flyer                     @relation(fields: [flyerId], references: [id])
+  orderStripePaymentIntent OrderStripePaymentIntent?
+  receipt                  Receipt?
+  appliedDiscounts         AppliedDiscount[]
+
+  @@index([groupId])
+  @@index([concertId])
+  @@map("orders")
+}
+
+model OrderStripePaymentIntent {
+  id                  Int                 @id @default(autoincrement())
+  uid                 String              @unique @db.VarChar(16)
+  orderId             Int                 @unique @map("order_id")
+  stripePaymentId     Int                 @unique @map("stripe_payment_id")
+  createdAt           DateTime            @default(now()) @map("created_at") @db.DateTime(6)
+  order               Order               @relation(fields: [orderId], references: [id])
+  stripePaymentIntent StripePaymentIntent @relation(fields: [stripePaymentId], references: [id])
+
+  @@index([orderId])
+  @@index([stripePaymentId])
+  @@map("order_stripe_payment_intents")
+}
+
+model Receipt {
+  id             Int             @id @default(autoincrement())
+  uid            String          @unique @db.VarChar(16)
+  orderId        Int             @unique @map("order_id")
+  totalPrice     Int             @map("total_price")
+  subtotalPrice  Int             @map("subtotal_price")
+  discountPrice  Int             @map("discount_price")
+  taxPrice       Int             @map("tax_price")
+  taxRate        Int             @map("tax_rate")
+  createdAt      DateTime        @default(now()) @map("created_at") @db.DateTime(6)
+  order          Order           @relation(fields: [orderId], references: [id])
+  receiptDetails ReceiptDetail[]
+
+  @@index([orderId])
+  @@map("receipts")
+}
+
+model ReceiptDetail {
+  id               Int      @id @default(autoincrement())
+  uid              String   @unique @db.VarChar(16)
+  receiptId        Int      @map("receipt_id")
+  name             String   @db.VarChar(100)
+  quantity         Int
+  pricePerQuantity Int      @map("price_per_quantity")
+  daysPerQuantity  Int      @map("days_per_quantity")
+  createdAt        DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  receipt          Receipt  @relation(fields: [receiptId], references: [id])
+
+  @@index([receiptId])
+  @@map("receipt_details")
+}
+
+model Discount {
+  id               Int               @id @default(autoincrement())
+  name             String            @db.VarChar(100)
+  description      String            @db.VarChar(255)
+  type             DiscountType
+  startDate        DateTime          @map("start_date") @db.DateTime(0)
+  endDate          DateTime          @map("end_date") @db.DateTime(0)
+  value            Decimal           @db.Decimal(10, 2)
+  condition        String            @unique @db.VarChar(50)
+  appliedDiscounts AppliedDiscount[]
+
+  @@map("discounts")
+}
+
+model AppliedDiscount {
+  id                  Int      @id @default(autoincrement())
+  uid                 String   @unique @db.VarChar(16)
+  orderId             Int      @map("order_id")
+  discountId          Int      @map("discount_id")
+  actualDiscountPrice Int      @map("actual_discount_price")
+  createdAt           DateTime @default(now()) @map("created_at") @db.DateTime(6)
+  order               Order    @relation(fields: [orderId], references: [id])
+  discount            Discount @relation(fields: [discountId], references: [id])
+
+  @@unique([orderId, discountId])
+  @@index([orderId])
+  @@index([discountId])
+  @@map("applied_discounts")
+}
+
+model DistributionSetting {
+  id         Int      @id @default(autoincrement())
+  uid        String   @unique @db.VarChar(16)
+  flyerId    Int      @map("flyer_id")
+  facilityId Int      @map("facility_id")
+  startDate  DateTime @map("start_date") @db.DateTime(0)
+  endDate    DateTime @map("end_date") @db.DateTime(0)
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  flyer      Flyer    @relation(fields: [flyerId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(6)
+
+  @@unique([flyerId, facilityId])
+  @@index([flyerId])
+  @@index([facilityId])
+  @@map("distribution_settings")
+}
+
+model InsertedImage {
+  id               Int             @id @default(autoincrement())
+  uid              String          @unique @db.VarChar(16)
+  key              String          @db.VarChar(255)
+  versionId        String          @map("version_id") @db.VarChar(100)
+  originPamphletId Int             @map("origin_pamphlet_id")
+  createdAt        DateTime        @default(now()) @map("created_at") @db.DateTime(6)
+  originPamphlet   OriginPamphlet  @relation(fields: [originPamphletId], references: [id])
+  insertedFlyers   InsertedFlyer[]
+
+  @@unique([key, originPamphletId])
+  @@map("inserted_images")
+}
+
+model InsertedFlyer {
+  id              Int           @id @default(autoincrement())
+  uid             String        @unique @db.VarChar(16)
+  flyerId         Int           @map("flyer_id")
+  insertedImageId Int           @map("inserted_image_id")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.DateTime(6)
+  flyer           Flyer         @relation(fields: [flyerId], references: [id])
+  insertedImage   InsertedImage @relation(fields: [insertedImageId], references: [id])
+
+  @@unique([flyerId, insertedImageId])
+  @@map("inserted_flyers")
+}
