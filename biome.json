@@ -38,12 +38,11 @@
         "useLiteralKeys": "off",
         "useOptionalChain": "warn",
         "noForEach": "warn",
-        "noStaticOnlyClass": "off",
-        "noThisInStatic": "off",
         "noExcessiveNestedTestSuites": "warn"
       },
       "correctness": {
-        "noUnusedVariables": "off"
+        "noUnusedVariables": "off",
+        "noUnusedImports": "error"
       },
       "style": {
         "useImportType": "off",

@@ -10,5 +10,5 @@ export function healthCheck(
     res.end('ok');
   }
 
-  return next();
+  next();
 }

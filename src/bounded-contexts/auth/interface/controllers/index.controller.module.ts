@@ -5,9 +5,9 @@ import { StrategyModule } from '../../application/strategies/index.strategy.modu
 import { UsecaseModule } from '../../application/usecases/index.usecase.module';
 import { RepositoryModule } from '../../infrastructure/repositories/index.repository.module';
 
-const resolvers = [];
+const controllers = [];
 @Module({
   imports: [UsecaseModule, StrategyModule, PassportModule, RepositoryModule],
-  providers: [...resolvers],
+  providers: [...controllers],
 })
 export class ControllerModule {}
