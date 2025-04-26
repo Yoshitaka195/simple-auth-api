@@ -3,7 +3,10 @@ import { PASSWORD_ENCRYPTION_LIBRARY_TOKEN } from './core/i-password-encryption.
 import { PasswordEncryptionLibrary } from './impl/password-encryption.library';
 
 const libraries = [
-  { provide: PASSWORD_ENCRYPTION_LIBRARY_TOKEN, useClass: PasswordEncryptionLibrary },
+  {
+    provide: PASSWORD_ENCRYPTION_LIBRARY_TOKEN,
+    useClass: PasswordEncryptionLibrary,
+  },
 ];
 
 @Module({

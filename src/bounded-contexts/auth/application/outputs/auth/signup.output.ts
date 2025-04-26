@@ -1,4 +1,4 @@
-import { BaseOutput } from "../i-output-base.dto";
+import { BaseOutput } from '../i-output-base.dto';
 
 export class SignupOutput extends BaseOutput {
   /**
