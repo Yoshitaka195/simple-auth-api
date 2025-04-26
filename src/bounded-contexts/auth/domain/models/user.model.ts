@@ -1,3 +1,5 @@
+export type HashedString = string & { readonly __brand: unique symbol };
+
 /**
  * ユーザーモデル
  */
@@ -5,7 +7,7 @@ export class UserModel {
   /**
    * ユーザーID
    */
-  id: number;
+  id: number | null;
 
   /**
    * ユーザー名
@@ -20,41 +22,28 @@ export class UserModel {
   /**
    * パスワード
    */
-  password: string;
+  hashedPassword: HashedString;
 
-  constructor({
-    id,
-    name,
-    email,
-    password,
-  }: {
-    id: number;
+  constructor(args: {
+    id: number | null;
     name: string;
     email: string;
-    password: string;
+    hashedPassword: HashedString;
   }) {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.password = password;
+    this.id = args.id;
+    this.name = args.name;
+    this.email = args.email;
+    this.hashedPassword = args.hashedPassword;
   }
 
-  static buildNewAccount({
-    id,
-    name,
-    email,
-    password,
-  }: {
-    id: number;
+  static buildNew(args: {
     name: string;
     email: string;
-    password: string;
+    hashedPassword: HashedString;
   }): UserModel {
     return new UserModel({
-      id,
-      name,
-      email,
-      password,
+      ...args,
+      id: null,
     });
   }
 }

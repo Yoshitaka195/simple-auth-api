@@ -1,0 +1,3 @@
+interface BaseOutput {
+  isSuccess: boolean;
+}

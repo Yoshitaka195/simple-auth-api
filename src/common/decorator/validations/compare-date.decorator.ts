@@ -1,7 +1,7 @@
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidationArguments,
+  ValidationOptions,
+  registerDecorator,
 } from 'class-validator';
 
 export function CompareDate(
@@ -11,7 +11,7 @@ export function CompareDate(
   },
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: any, propertyName: string) {
+  return (object: any, propertyName: string) => {
     registerDecorator({
       name: 'CompareDate',
       target: object.constructor,

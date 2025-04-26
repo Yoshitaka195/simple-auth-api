@@ -1,3 +1,0 @@
-interface IOutputBaseDto {
-  isSuccess: boolean;
-}

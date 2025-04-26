@@ -1,14 +1,14 @@
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidationArguments,
+  ValidationOptions,
+  registerDecorator,
 } from 'class-validator';
 
 export function EqualsNested(
   property: { comparandsArray: string[][] },
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: any, propertyName: string) {
+  return (object: any, propertyName: string) => {
     registerDecorator({
       name: 'EqualsNested',
       target: object.constructor,

@@ -1,14 +1,11 @@
 import { Module } from '@nestjs/common';
+import { UsecaseModule } from '../usecases/index.usecase.module';
+import { JwtStrategy } from './core/jwt.strategy';
 
-import { RepositoryModule } from '../../infrastructure/repositories/index.repository.module';
-
-import { UserStrategy } from './core/user.strategy';
-import { USER_STATEGY_TOKEN } from './interface/i-user.strategy';
-
-const strategies = [{ provide: USER_STATEGY_TOKEN, useClass: UserStrategy }];
+const strategies = [JwtStrategy];
 
 @Module({
-  imports: [RepositoryModule],
+  imports: [UsecaseModule],
   exports: [...strategies],
   providers: [...strategies],
 })

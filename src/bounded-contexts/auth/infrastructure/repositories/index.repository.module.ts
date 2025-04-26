@@ -3,7 +3,7 @@ import { USER_REPOSITORY_TOKEN } from '../../domain/repositories/interface/i-use
 import { UserRepository } from './impl/user.repository';
 
 const repositories = [
-  {  provide: USER_REPOSITORY_TOKEN, useClass: UserRepository },
+  { provide: USER_REPOSITORY_TOKEN, useClass: UserRepository },
 ];
 
 @Module({

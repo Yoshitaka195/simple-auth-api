@@ -1,9 +1,9 @@
 import {
-  registerDecorator,
+  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  ValidationArguments,
+  registerDecorator,
 } from 'class-validator';
 
 @ValidatorConstraint({ async: false })
@@ -24,7 +24,7 @@ export class IsAfterTodayConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsAfterToday(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
+  return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
