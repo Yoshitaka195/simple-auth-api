@@ -46,4 +46,13 @@ export class UserModel {
       id: null,
     });
   }
+
+  public update(args: {
+    name?: string;
+  }): UserModel {
+    return new UserModel({
+      ...this,
+      ...args,
+    });
+  }
 }

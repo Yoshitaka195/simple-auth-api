@@ -1,5 +1,13 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
-import { AuthSignupCommand } from '../../../application/commands/auth';
+import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import {
+  CurrentUser,
+  CurrentUserDto,
+} from '../../../../../common/decorator/current-user.decorator';
+import {
+  AuthLoginCommand,
+  AuthSignupCommand,
+} from '../../../application/commands/auth';
 import {
   AUTH_USECASE_TOKEN,
   IAuthUsecase,
@@ -15,26 +23,16 @@ export class AuthController {
 
   @Post('signup')
   async signup(@Body() input: AuthSignupInputDto) {
-    console.log('input', input);
     const command = new AuthSignupCommand(input);
     const output = await this.authUsecase.signup(command);
     return output;
   }
 
-  // @Post('login')
-  // async login() {
-  //   throw new Error('Not implemented');
-  // }
-
-  // @UseGuards(AuthGuard)
-  // @Post('logout')
-  // async logout(@Request() req) {
-  //   throw new Error('Not implemented');
-  // }
-
-  // @UseGuards(AuthGuard)
-  // @Post('refresh')
-  // async refresh(@Request() req) {
-  //   throw new Error('Not implemented');
-  // }
+  @Post('login')
+  @UseGuards(AuthGuard('local'))
+  async login(@CurrentUser() user: CurrentUserDto) {
+    const command = new AuthLoginCommand({ id: user.id });
+    const output = await this.authUsecase.login(command);
+    return output;
+  }
 }

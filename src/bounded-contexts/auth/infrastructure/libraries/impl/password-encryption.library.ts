@@ -5,4 +5,11 @@ export class PasswordEncryptionLibrary implements IPasswordEncryptionLibrary {
   async encryptPassword(password: string): Promise<HashedString> {
     return password as HashedString;
   }
+
+  async comparePassword(
+    password: string,
+    hashedPassword: HashedString,
+  ): Promise<boolean> {
+    return true;
+  }
 }

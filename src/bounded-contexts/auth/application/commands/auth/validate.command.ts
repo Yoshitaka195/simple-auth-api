@@ -1,9 +1,4 @@
-export class SignupCommand {
-  /**
-   * ユーザー名
-   */
-  readonly name: string;
-
+export class ValidateCommand {
   /**
    * メールアドレス
    */
@@ -15,11 +10,9 @@ export class SignupCommand {
   readonly password: string;
 
   constructor(args: {
-    name: string;
     email: string;
     password: string;
   }) {
-    this.name = args.name;
     this.email = args.email;
     this.password = args.password;
   }

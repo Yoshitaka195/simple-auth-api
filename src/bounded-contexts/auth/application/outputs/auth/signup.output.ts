@@ -4,12 +4,12 @@ export class SignupOutput extends BaseOutput {
   /**
    * ユーザー名
    */
-  name: string;
+  readonly name: string;
 
   /**
    * メールアドレス
    */
-  email: string;
+  readonly email: string;
 
   constructor(args: {
     isSuccess: boolean;

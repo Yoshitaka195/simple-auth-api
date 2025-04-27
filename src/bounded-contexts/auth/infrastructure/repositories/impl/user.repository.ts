@@ -7,7 +7,11 @@ export class UserRepository implements IUserRepository {
   //   private readonly userRepository: IUserRepository,
   // ) {}
 
-  getUserById(id: number): Promise<UserModel | null> {
+  async findById(id: number): Promise<UserModel | null> {
+    throw new Error('Method not implemented.');
+  }
+
+  async findByEmail(email: string): Promise<UserModel | null> {
     throw new Error('Method not implemented.');
   }
 
@@ -15,19 +19,11 @@ export class UserRepository implements IUserRepository {
     return user;
   }
 
-  updateUser(user: UserModel): Promise<UserModel | null> {
-    throw new Error('Method not implemented.');
+  async update(user: UserModel): Promise<UserModel> {
+    return user;
   }
 
-  deleteUser(id: number): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
-
-  findUserByEmail(email: string): Promise<UserModel | null> {
-    throw new Error('Method not implemented.');
-  }
-
-  findUserByUsername(username: string): Promise<UserModel | null> {
-    throw new Error('Method not implemented.');
+  async delete(user: UserModel): Promise<void> {
+    return;
   }
 }

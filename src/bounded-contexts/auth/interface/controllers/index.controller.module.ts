@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 
-import { StrategyModule } from '../../application/strategies/index.strategy.module';
 import { UsecaseModule } from '../../application/usecases/index.usecase.module';
 import { RepositoryModule } from '../../infrastructure/repositories/index.repository.module';
+import { StrategyModule } from '../strategies/index.strategy.module';
 import { AuthController } from './impl/auth.controller';
 
 const controllers = [AuthController];

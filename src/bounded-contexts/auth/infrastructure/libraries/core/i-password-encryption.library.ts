@@ -5,4 +5,8 @@ export const PASSWORD_ENCRYPTION_LIBRARY_TOKEN =
 
 export interface IPasswordEncryptionLibrary {
   encryptPassword(password: string): Promise<HashedString>;
+  comparePassword(
+    password: string,
+    hashedPassword: HashedString,
+  ): Promise<boolean>;
 }
