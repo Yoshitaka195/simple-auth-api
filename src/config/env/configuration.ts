@@ -7,7 +7,7 @@ export default () => ({
     name: process.env.RAKBIL_TEST_DB,
   },
   auth: {
-    nextauth_secret: process.env.NEXTAUTH_SECRET,
+    jwt_secret: process.env.JWT_SECRET,
   },
   aws: {
     s3: {

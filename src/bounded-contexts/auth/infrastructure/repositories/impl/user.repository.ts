@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { UserModel } from '../../../domain/models/user.model';
 import { IUserRepository } from '../../../domain/repositories/interface/i-user.repository';
 
+@Injectable()
 export class UserRepository implements IUserRepository {
   // constructor(
   //   @Inject('USER_REPOSITORY_TOKEN')

@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { JWT_LIBRARY_TOKEN } from './core/i-jwt.library';
 import { PASSWORD_ENCRYPTION_LIBRARY_TOKEN } from './core/i-password-encryption.library';
 import { JwtLibrary } from './impl/jwt.library';
@@ -16,7 +18,15 @@ const libraries = [
 ];
 
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('auth.jwt_secret'),
+        signOptions: { expiresIn: '12h' },
+      }),
+      inject: [ConfigService],
+    }),
+  ],
   providers: [...libraries],
   exports: [...libraries],
 })

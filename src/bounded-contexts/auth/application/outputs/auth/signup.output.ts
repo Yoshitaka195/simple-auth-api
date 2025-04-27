@@ -11,13 +11,20 @@ export class SignupOutput extends BaseOutput {
    */
   readonly email: string;
 
+  /**
+   * アクセストークン
+   */
+  readonly accessToken: string;
+
   constructor(args: {
     isSuccess: boolean;
     name: string;
     email: string;
+    accessToken: string;
   }) {
     super(args.isSuccess);
     this.name = args.name;
     this.email = args.email;
+    this.accessToken = args.accessToken;
   }
 }

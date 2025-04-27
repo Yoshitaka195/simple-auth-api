@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
 import { ControllerModule } from './bounded-contexts/auth/interface/controllers/index.controller.module';
 import configuration from './config/env/configuration';
 @Module({
@@ -13,6 +12,7 @@ import configuration from './config/env/configuration';
           : ['.env'],
       load: [configuration],
     }),
+
     ControllerModule,
   ],
 })

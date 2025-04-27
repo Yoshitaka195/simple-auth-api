@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { LibraryModule } from '../../infrastructure/libraries/index.library.module';
 import { RepositoryModule } from '../../infrastructure/repositories/index.repository.module';
 import { AUTH_USECASE_TOKEN } from './core/i-auth.usecase';

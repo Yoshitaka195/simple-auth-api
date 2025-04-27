@@ -50,12 +50,17 @@ export class AuthUsecase implements IAuthUsecase {
       hashedPassword,
     });
 
+    // ユーザー情報をDBに保存
     const createdUser = await this.userRepository.create(user);
+  
+    // アクセストークン発行
+    const accessToken = await this.jwtLibrary.generateToken(user);
 
     return new AuthSignupOutput({
       isSuccess: true,
       name: createdUser.name,
       email: createdUser.email,
+      accessToken,
     });
   }
 
