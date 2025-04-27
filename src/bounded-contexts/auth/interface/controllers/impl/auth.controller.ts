@@ -13,6 +13,10 @@ import {
   IAuthUsecase,
 } from '../../../application/usecases/core/i-auth.usecase';
 import { AuthSignupInputDto } from '../../dtos/auth';
+import {
+  AuthLoginResponsePresenter,
+  AuthSignupResponsePresenter,
+} from '../../presenters/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +29,8 @@ export class AuthController {
   async signup(@Body() input: AuthSignupInputDto) {
     const command = new AuthSignupCommand(input);
     const output = await this.authUsecase.signup(command);
-    return output;
+
+    return new AuthSignupResponsePresenter(output).convertToResponse();
   }
 
   @Post('login')
@@ -33,6 +38,7 @@ export class AuthController {
   async login(@CurrentUser() user: CurrentUserDto) {
     const command = new AuthLoginCommand({ id: user.id });
     const output = await this.authUsecase.login(command);
-    return output;
+
+    return new AuthLoginResponsePresenter(output).convertToResponse();
   }
 }

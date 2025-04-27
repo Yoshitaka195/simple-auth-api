@@ -3,10 +3,11 @@ import {
   UnauthorizedException,
   createParamDecorator,
 } from '@nestjs/common';
-import { AuthValidateOutput } from '../../bounded-contexts/auth/application/outputs/auth';
+import {} from '../../bounded-contexts/auth/application/outputs/auth';
+import { UserModel } from '../../bounded-contexts/auth/domain/models/user.model';
 
 export interface AuthenticatedRequest extends Request {
-  output: AuthValidateOutput;
+  user: UserModel;
 }
 
 export type CurrentUserDto = {
@@ -16,10 +17,10 @@ export type CurrentUserDto = {
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): CurrentUserDto => {
     const request = ctx.switchToHttp().getRequest<AuthenticatedRequest>();
-    if (!request.output.user || !request.output.user?.id) {
+    if (!request.user || !request.user?.id) {
       throw new UnauthorizedException();
     }
 
-    return { id: request.output.user.id };
+    return { id: request.user.id };
   },
 );

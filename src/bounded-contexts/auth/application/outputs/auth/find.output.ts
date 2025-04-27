@@ -1,7 +1,7 @@
 import { UserModel } from '../../../domain/models/user.model';
 import { BaseOutput } from '../i-output-base.dto';
 
-export class FindByEmailOutput extends BaseOutput {
+export class FindOutput extends BaseOutput {
   /**
    * ユーザー情報
    */

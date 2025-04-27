@@ -17,14 +17,21 @@ import {
   UserFindCommand,
   UserUpdateCommand,
 } from '../../../application/commands/user';
-import { IUserUsecase } from '../../../application/usecases/core/i-user.usecase';
-import { USER_REPOSITORY_TOKEN } from '../../../domain/repositories/interface/i-user.repository';
+import {
+  IUserUsecase,
+  USER_USECASE_TOKEN,
+} from '../../../application/usecases/core/i-user.usecase';
 import { UserUpdateInputDto } from '../../dtos/user';
+import {
+  UserDeleteResponsePresenter,
+  UserFindResponsePresenter,
+  UserUpdateResponsePresenter,
+} from '../../presenters/user';
 
 @Controller('user')
 export class UserController {
   constructor(
-    @Inject(USER_REPOSITORY_TOKEN)
+    @Inject(USER_USECASE_TOKEN)
     private readonly userUsecase: IUserUsecase,
   ) {}
 
@@ -33,7 +40,8 @@ export class UserController {
   async me(@CurrentUser() user: CurrentUserDto) {
     const command = new UserFindCommand({ id: user.id });
     const output = await this.userUsecase.find(command);
-    return output;
+
+    return new UserFindResponsePresenter(output).convertToResponse();
   }
 
   @Patch()
@@ -47,7 +55,8 @@ export class UserController {
       name: input.name,
     });
     const output = await this.userUsecase.update(command);
-    return output;
+
+    return new UserUpdateResponsePresenter(output).convertToResponse();
   }
 
   @Delete()
@@ -55,6 +64,7 @@ export class UserController {
   async delete(@CurrentUser() user: CurrentUserDto) {
     const command = new UserDeleteCommand({ id: user.id });
     const output = await this.userUsecase.delete(command);
-    return output;
+
+    return new UserDeleteResponsePresenter(output).convertToResponse();
   }
 }

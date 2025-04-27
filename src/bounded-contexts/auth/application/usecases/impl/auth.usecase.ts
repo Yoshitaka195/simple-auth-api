@@ -14,13 +14,13 @@ import {
   PASSWORD_ENCRYPTION_LIBRARY_TOKEN,
 } from '../../../infrastructure/libraries/core/i-password-encryption.library';
 import {
-  AuthFindByEmailCommand,
+  AuthFindCommand,
   AuthLoginCommand,
   AuthValidateCommand,
 } from '../../commands/auth';
 import { SignupCommand } from '../../commands/auth/signup.command';
 import {
-  AuthFindByEmailOutput,
+  AuthFindOutput,
   AuthLoginOutput,
   AuthSignupOutput,
   AuthValidateOutput,
@@ -41,6 +41,14 @@ export class AuthUsecase implements IAuthUsecase {
   async signup(command: SignupCommand): Promise<AuthSignupOutput> {
     const { name, email, password } = command;
 
+    const existingUser = await this.userRepository.findByEmail(email);
+    if (existingUser) {
+      return new AuthSignupOutput({
+        isSuccess: false,
+        isErrorAlreadyExists: true,
+      });
+    }
+
     const hashedPassword =
       await this.passwordEncryptionLibrary.encryptPassword(password);
 
@@ -52,9 +60,9 @@ export class AuthUsecase implements IAuthUsecase {
 
     // ユーザー情報をDBに保存
     const createdUser = await this.userRepository.create(user);
-  
+
     // アクセストークン発行
-    const accessToken = await this.jwtLibrary.generateToken(user);
+    const accessToken = await this.jwtLibrary.generateToken(createdUser);
 
     return new AuthSignupOutput({
       isSuccess: true,
@@ -114,20 +122,18 @@ export class AuthUsecase implements IAuthUsecase {
     });
   }
 
-  async findByEmail(
-    input: AuthFindByEmailCommand,
-  ): Promise<AuthFindByEmailOutput> {
-    const { email } = input;
+  async find(input: AuthFindCommand): Promise<AuthFindOutput> {
+    const { id } = input;
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findById(id);
     if (!user) {
-      return new AuthFindByEmailOutput({
+      return new AuthFindOutput({
         isSuccess: false,
         isErrorNotFound: true,
       });
     }
 
-    return new AuthFindByEmailOutput({
+    return new AuthFindOutput({
       isSuccess: true,
       user,
     });

@@ -1,11 +1,11 @@
 import {
-  AuthFindByEmailCommand,
+  AuthFindCommand,
   AuthLoginCommand,
   AuthSignupCommand,
   AuthValidateCommand,
 } from '../../commands/auth';
 import {
-  AuthFindByEmailOutput,
+  AuthFindOutput,
   AuthLoginOutput,
   AuthSignupOutput,
   AuthValidateOutput,
@@ -16,5 +16,5 @@ export interface IAuthUsecase {
   signup(input: AuthSignupCommand): Promise<AuthSignupOutput>;
   validate(input: AuthValidateCommand): Promise<AuthValidateOutput>;
   login(input: AuthLoginCommand): Promise<AuthLoginOutput>;
-  findByEmail(input: AuthFindByEmailCommand): Promise<AuthFindByEmailOutput>;
+  find(input: AuthFindCommand): Promise<AuthFindOutput>;
 }

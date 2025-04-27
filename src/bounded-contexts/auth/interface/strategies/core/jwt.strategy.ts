@@ -1,18 +1,14 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthFindByEmailCommand } from '../../../application/commands/auth';
+import { AuthFindCommand } from '../../../application/commands/auth';
 import {
   AUTH_USECASE_TOKEN,
   IAuthUsecase,
 } from '../../../application/usecases/core/i-auth.usecase';
-import { AuthFindByEmailInputDto } from '../../dtos/auth';
+import { AuthFindInputDto } from '../../dtos/auth';
+import { AuthValidateJwtStrategyPresenter } from '../../presenters/auth';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -28,22 +24,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(input: AuthFindByEmailInputDto): Promise<any> {
-    if (!input?.email) {
-      throw new BadRequestException();
+  async validate(input: AuthFindInputDto): Promise<any> {
+    if (!input.id || !input.email) {
+      throw new UnauthorizedException('認証に失敗しました');
     }
 
-    const command = new AuthFindByEmailCommand(input);
-    const output = await this.authUsecase.findByEmail(command);
+    const command = new AuthFindCommand(input);
+    const output = await this.authUsecase.find(command);
 
-    if (!output.isSuccess) {
-      throw new UnauthorizedException();
-    }
-
-    if (!output.user) {
-      throw new UnauthorizedException();
-    }
-
-    return output.user.id;
+    return new AuthValidateJwtStrategyPresenter(output).convertToUser();
   }
 }

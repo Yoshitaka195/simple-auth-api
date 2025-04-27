@@ -4,7 +4,6 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import * as fastify from 'fastify';
-
 import { AppModule } from './app.module';
 import { healthCheck } from './common/middleware/health-check.middleware';
 

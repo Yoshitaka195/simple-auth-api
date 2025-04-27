@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthValidateCommand } from '../../../application/commands/auth';
@@ -11,7 +6,7 @@ import {
   AUTH_USECASE_TOKEN,
   IAuthUsecase,
 } from '../../../application/usecases/core/i-auth.usecase';
-import { ValidateInputDto } from '../../dtos/auth/validate-input.dto';
+import { ValidateLocalStrategyPresenter } from '../../presenters/auth/validate-local-strategy.presenter';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -22,22 +17,17 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  async validate(input: ValidateInputDto): Promise<any> {
-    if (!input?.email) {
+  async validate(email: string, password: string): Promise<any> {
+    if (!email || !password) {
       throw new BadRequestException();
     }
 
-    const command = new AuthValidateCommand(input);
+    const command = new AuthValidateCommand({
+      email,
+      password,
+    });
     const output = await this.authUsecase.validate(command);
 
-    if (!output.isSuccess) {
-      throw new UnauthorizedException();
-    }
-
-    if (!output.user) {
-      throw new UnauthorizedException();
-    }
-
-    return output.user;
+    return new ValidateLocalStrategyPresenter(output).convertToUser();
   }
 }

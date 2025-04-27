@@ -70,8 +70,11 @@ export class UserUsecase implements IUserUsecase {
       });
     }
 
+    // ユーザーのメールアドレスを削除扱いとする
+    const markedDeleteUser = user.markEmailAsDeleted();
+
     // ユーザーの削除
-    await this.userRepository.delete(user);
+    await this.userRepository.delete(markedDeleteUser);
 
     return new UserDeleteOutput({
       isSuccess: true,

@@ -55,4 +55,11 @@ export class UserModel {
       ...args,
     });
   }
+
+  public markEmailAsDeleted(): UserModel {
+    return new UserModel({
+      ...this,
+      email: `${this.email}_deleted_${new Date().getTime()}`,
+    });
+  }
 }
