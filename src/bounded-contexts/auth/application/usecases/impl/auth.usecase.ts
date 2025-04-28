@@ -6,22 +6,16 @@ import {
   USER_REPOSITORY_TOKEN,
 } from '../../../domain/repositories/interface/i-user.repository';
 import {
-  IJwtLibrary,
-  JWT_LIBRARY_TOKEN,
-} from '../../../infrastructure/libraries/core/i-jwt.library';
-import {
   IPasswordEncryptionLibrary,
   PASSWORD_ENCRYPTION_LIBRARY_TOKEN,
 } from '../../../infrastructure/libraries/core/i-password-encryption.library';
 import {
   AuthFindCommand,
-  AuthLoginCommand,
   AuthSignupCommand,
   AuthValidateCommand,
 } from '../../commands/auth';
 import {
   AuthFindOutput,
-  AuthLoginOutput,
   AuthSignupOutput,
   AuthValidateOutput,
 } from '../../outputs/auth';
@@ -34,8 +28,6 @@ export class AuthUsecase implements IAuthUsecase {
     private readonly userRepository: IUserRepository,
     @Inject(PASSWORD_ENCRYPTION_LIBRARY_TOKEN)
     private readonly passwordEncryptionLibrary: IPasswordEncryptionLibrary,
-    @Inject(JWT_LIBRARY_TOKEN)
-    private readonly jwtLibrary: IJwtLibrary,
   ) {}
 
   async signup(command: AuthSignupCommand): Promise<AuthSignupOutput> {
@@ -61,13 +53,9 @@ export class AuthUsecase implements IAuthUsecase {
     // ユーザー情報をDBに保存
     const createdUser = await this.userRepository.create(user);
 
-    // アクセストークン発行
-    const accessToken = await this.jwtLibrary.generateToken(createdUser);
-
     return new AuthSignupOutput({
       isSuccess: true,
       user: createdUser,
-      accessToken,
     });
   }
 
@@ -99,25 +87,6 @@ export class AuthUsecase implements IAuthUsecase {
     return new AuthValidateOutput({
       isSuccess: true,
       user,
-    });
-  }
-
-  async login(input: AuthLoginCommand): Promise<AuthLoginOutput> {
-    const { id } = input;
-
-    const user = await this.userRepository.findById(id);
-    if (!user) {
-      return new AuthLoginOutput({
-        isSuccess: false,
-        isErrorNotFound: true,
-      });
-    }
-
-    const accessToken = await this.jwtLibrary.generateToken(user);
-
-    return new AuthLoginOutput({
-      isSuccess: true,
-      accessToken,
     });
   }
 

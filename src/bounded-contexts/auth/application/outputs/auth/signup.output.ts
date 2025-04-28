@@ -8,11 +8,6 @@ export class SignupOutput extends BaseOutput {
   readonly user: UserModel | null;
 
   /**
-   * アクセストークン
-   */
-  readonly accessToken: string | null;
-
-  /**
    * 既に登録済みの場合
    */
   readonly isErrorAlreadyExists: boolean;
@@ -20,12 +15,10 @@ export class SignupOutput extends BaseOutput {
   constructor(args: {
     isSuccess: boolean;
     user?: UserModel;
-    accessToken?: string;
     isErrorAlreadyExists?: boolean;
   }) {
     super(args.isSuccess);
     this.user = args.user ?? null;
-    this.accessToken = args.accessToken ?? null;
     this.isErrorAlreadyExists = args.isErrorAlreadyExists ?? false;
   }
 }

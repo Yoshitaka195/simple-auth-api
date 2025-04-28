@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Inject,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -45,7 +45,7 @@ export class UsersController {
     return new UserFindResponsePresenter(output).convertToResponse();
   }
 
-  @Patch(':user_id') 
+  @Patch(':user_id')
   @UseGuards(BasicAuthGuard)
   async update(
     @Param('user_id') userId: string,
@@ -61,7 +61,7 @@ export class UsersController {
     return new UserUpdateResponsePresenter(output).convertToResponse();
   }
 
-  @Delete('close')
+  @Post('close')
   @UseGuards(BasicAuthGuard)
   async delete(@CurrentUser() user: CurrentUserDto) {
     const command = new UserDeleteCommand({ id: user.id });

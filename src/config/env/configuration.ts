@@ -6,16 +6,4 @@ export default () => ({
     password: process.env.RAKBIL_TEST_DB_PASSWORD,
     name: process.env.RAKBIL_TEST_DB,
   },
-  auth: {
-    jwt_secret: process.env.JWT_SECRET,
-  },
-  aws: {
-    s3: {
-      common: {
-        region: process.env.S3_REGION,
-        key: process.env.S3_CLIENT_KEY,
-        secret: process.env.S3_CLIENT_SECRET,
-      },
-    },
-  },
 });
