@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import { UsecaseModule } from '../../application/usecases/index.usecase.module';
-import { JwtStrategy } from './core/jwt.strategy';
+import { BasicStrategy } from './core/basic.strategy';
 import { LocalStrategy } from './core/local.strategy';
 
-const strategies = [LocalStrategy, JwtStrategy];
+const strategies = [LocalStrategy, BasicStrategy];
 
 @Module({
   imports: [UsecaseModule],

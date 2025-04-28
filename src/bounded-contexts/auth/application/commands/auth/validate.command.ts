@@ -1,8 +1,8 @@
 export class ValidateCommand {
   /**
-   * メールアドレス
+   * ユーザID
    */
-  readonly email: string;
+  readonly userId: string;
 
   /**
    * パスワード
@@ -10,10 +10,10 @@ export class ValidateCommand {
   readonly password: string;
 
   constructor(args: {
-    email: string;
+    userId: string;
     password: string;
   }) {
-    this.email = args.email;
+    this.userId = args.userId;
     this.password = args.password;
   }
 }

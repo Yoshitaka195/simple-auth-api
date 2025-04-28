@@ -16,9 +16,9 @@ import {
 import {
   AuthFindCommand,
   AuthLoginCommand,
+  AuthSignupCommand,
   AuthValidateCommand,
 } from '../../commands/auth';
-import { SignupCommand } from '../../commands/auth/signup.command';
 import {
   AuthFindOutput,
   AuthLoginOutput,
@@ -38,10 +38,11 @@ export class AuthUsecase implements IAuthUsecase {
     private readonly jwtLibrary: IJwtLibrary,
   ) {}
 
-  async signup(command: SignupCommand): Promise<AuthSignupOutput> {
-    const { name, email, password } = command;
-
-    const existingUser = await this.userRepository.findByEmail(email);
+  async signup(command: AuthSignupCommand): Promise<AuthSignupOutput> {
+    const { userId, password } = command;
+    console.log('userId', userId);
+    console.log('password', password);
+    const existingUser = await this.userRepository.findById(userId);
     if (existingUser) {
       return new AuthSignupOutput({
         isSuccess: false,
@@ -53,8 +54,7 @@ export class AuthUsecase implements IAuthUsecase {
       await this.passwordEncryptionLibrary.encryptPassword(password);
 
     const user = UserModel.buildNew({
-      name,
-      email,
+      id: userId,
       hashedPassword,
     });
 
@@ -66,17 +66,16 @@ export class AuthUsecase implements IAuthUsecase {
 
     return new AuthSignupOutput({
       isSuccess: true,
-      name: createdUser.name,
-      email: createdUser.email,
+      user: createdUser,
       accessToken,
     });
   }
 
   async validate(command: AuthValidateCommand): Promise<AuthValidateOutput> {
-    const { email, password } = command;
+    const { userId, password } = command;
 
-    // メールアドレス情報を元にユーザー情報を取得
-    const user = await this.userRepository.findByEmail(email);
+    // ID情報を元にユーザー情報を取得
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       return new AuthValidateOutput({
         isSuccess: false,

@@ -7,59 +7,61 @@ export class UserModel {
   /**
    * ユーザーID
    */
-  id: number | null;
+  readonly id: string;
 
   /**
-   * ユーザー名
+   * ニックネーム
    */
-  name: string;
+  readonly nickname: string;
 
   /**
-   * メールアドレス
+   * コメント
    */
-  email: string;
+  readonly comment: string | null;
 
   /**
    * パスワード
    */
-  hashedPassword: HashedString;
+  readonly hashedPassword: HashedString;
 
   constructor(args: {
-    id: number | null;
-    name: string;
-    email: string;
+    id: string;
+    nickname: string;
+    comment: string | null;
     hashedPassword: HashedString;
   }) {
     this.id = args.id;
-    this.name = args.name;
-    this.email = args.email;
+    this.nickname = args.nickname;
+    this.comment = args.comment;
     this.hashedPassword = args.hashedPassword;
   }
 
   static buildNew(args: {
-    name: string;
-    email: string;
+    id: string;
     hashedPassword: HashedString;
   }): UserModel {
     return new UserModel({
       ...args,
-      id: null,
+      comment: null,
+      nickname: args.id,
     });
   }
 
   public update(args: {
-    name?: string;
+    nickname?: string;
+    comment?: string | null;
   }): UserModel {
     return new UserModel({
       ...this,
-      ...args,
+      nickname: args.nickname === undefined ? this.nickname : args.nickname,
+      comment: args.comment === undefined ? this.comment : args.comment,
     });
   }
 
-  public markEmailAsDeleted(): UserModel {
+  public markAsDeleted(): UserModel {
     return new UserModel({
       ...this,
-      email: `${this.email}_deleted_${new Date().getTime()}`,
+      id: `${this.id}_deleted_${new Date().getTime()}`,
     });
   }
 }

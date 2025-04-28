@@ -2,10 +2,10 @@ export class DeleteCommand {
   /**
    * ユーザーID
    */
-  readonly id: number;
+  readonly id: string;
 
   constructor(args: {
-    id: number;
+    id: string;
   }) {
     this.id = args.id;
   }

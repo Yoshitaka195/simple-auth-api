@@ -2,10 +2,10 @@ export class LoginCommand {
   /**
    * メールアドレス
    */
-  id: number;
+  id: string;
 
   constructor(args: {
-    id: number;
+    id: string;
   }) {
     this.id = args.id;
   }

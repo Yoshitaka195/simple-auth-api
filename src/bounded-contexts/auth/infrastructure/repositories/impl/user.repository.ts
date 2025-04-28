@@ -7,21 +7,9 @@ import { IUserRepository } from '../../../domain/repositories/interface/i-user.r
 export class UserRepository implements IUserRepository {
   private prisma = new PrismaClient();
 
-  async findById(id: number): Promise<UserModel | null> {
+  async findById(userId: string): Promise<UserModel | null> {
     const user = await this.prisma.user.findUnique({
-      where: { id, deletedAt: null },
-    });
-
-    if (user === null) {
-      return null;
-    }
-
-    return this.convertToModel(user);
-  }
-
-  async findByEmail(email: string): Promise<UserModel | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email, deletedAt: null },
+      where: { userId, deletedAt: null },
     });
 
     if (user === null) {
@@ -34,9 +22,9 @@ export class UserRepository implements IUserRepository {
   async create(user: UserModel): Promise<UserModel> {
     const createdUser = await this.prisma.user.create({
       data: {
-        name: user.name,
-        email: user.email,
-        hashedPassword: user.hashedPassword,
+        userId: user.id,
+        nickname: user.nickname,
+        password: user.hashedPassword,
       },
     });
 
@@ -45,9 +33,10 @@ export class UserRepository implements IUserRepository {
 
   async update(user: UserModel): Promise<UserModel> {
     const updatedUser = await this.prisma.user.update({
-      where: { id: user.id as number, deletedAt: null },
+      where: { userId: user.id, deletedAt: null },
       data: {
-        name: user.name,
+        nickname: user.nickname,
+        comment: user.comment,
       },
     });
 
@@ -56,17 +45,17 @@ export class UserRepository implements IUserRepository {
 
   async delete(user: UserModel): Promise<void> {
     await this.prisma.user.update({
-      where: { id: user.id as number, deletedAt: null },
-      data: { email: user.email, deletedAt: new Date() },
+      where: { userId: user.id, deletedAt: null },
+      data: { userId: user.id, deletedAt: new Date() },
     });
   }
 
   private convertToModel(user: User): UserModel {
     return new UserModel({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      hashedPassword: user.hashedPassword as HashedString,
+      id: user.userId,
+      comment: user.comment,
+      nickname: user.nickname,
+      hashedPassword: user.password as HashedString,
     });
   }
 }

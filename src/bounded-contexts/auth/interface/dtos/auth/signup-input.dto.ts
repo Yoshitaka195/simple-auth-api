@@ -1,14 +1,14 @@
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+
+import { Expose } from 'class-transformer';
+import { IsString, MaxLength, MinLength } from 'class-validator';
 
 export class SignupInputDto {
-  // 名前
+  // ユーザーID
+  @Expose({ name: 'user_id' })
   @IsString()
-  @MinLength(1) // 名前の最低文字数
-  @MaxLength(20) // 名前の最大文字数
-  name: string;
-
-  @IsEmail()
-  email: string;
+  @MinLength(6)
+  @MaxLength(20)
+  userId: string;
 
   @IsString()
   @MinLength(8)

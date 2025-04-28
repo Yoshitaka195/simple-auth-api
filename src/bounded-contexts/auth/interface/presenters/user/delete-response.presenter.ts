@@ -1,27 +1,24 @@
-import { InternalServerErrorException, NotFoundException, } from "@nestjs/common";
-import { UserDeleteOutput } from "../../../application/outputs/user";
+import { InternalServerErrorException } from '@nestjs/common';
+import { UserDeleteOutput } from '../../../application/outputs/user';
 
-
-export class DeleteResponsePresenter  {
-
+export class DeleteResponsePresenter {
   readonly output: UserDeleteOutput;
 
-  constructor(
-    private readonly outputDto: UserDeleteOutput,
-  ) {
-    this.outputDto =  outputDto;
+  constructor(private readonly outputDto: UserDeleteOutput) {
+    this.outputDto = outputDto;
   }
 
-  convertToResponse(): UserDeleteOutput {
+  convertToResponse() {
     if (this.outputDto.isErrorNotFound) {
-      throw new NotFoundException('対象のユーザーが見つかりません');
+      return { message: 'No user found' };
     }
 
     if (!this.outputDto.isSuccess) {
-      throw new InternalServerErrorException('ユーザー情報の削除に失敗しました');
+      throw new InternalServerErrorException(
+        'ユーザー情報の削除に失敗しました',
+      );
     }
 
-    return this.outputDto;
+    return { message: 'Account and user successfully removed' };
   }
-
 }

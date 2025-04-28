@@ -8,7 +8,7 @@ export class JwtLibrary implements IJwtLibrary {
   constructor(private jwtService: JwtService) {}
 
   async generateToken(user: UserModel): Promise<string> {
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id };
     return this.jwtService.sign(payload);
   }
 }

@@ -8,13 +8,13 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  name           String
-  email          String    @unique
-  hashedPassword String    @map("hashed_password")
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
-  deletedAt      DateTime? @map("deleted_at")
+  userId    String    @id @map("user_id")
+  nickname  String
+  password  String    @map("password")
+  comment   String?   @map("comment")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@map("users")
 }

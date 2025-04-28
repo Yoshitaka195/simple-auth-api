@@ -18,7 +18,7 @@ import {
   AuthSignupResponsePresenter,
 } from '../../presenters/auth';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(
     @Inject(AUTH_USECASE_TOKEN)

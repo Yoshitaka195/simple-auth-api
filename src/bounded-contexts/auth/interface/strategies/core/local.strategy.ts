@@ -23,7 +23,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
 
     const command = new AuthValidateCommand({
-      email,
+      userId: email,
       password,
     });
     const output = await this.authUsecase.validate(command);

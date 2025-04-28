@@ -7,6 +7,7 @@ import {
   AUTH_USECASE_TOKEN,
   IAuthUsecase,
 } from '../../../application/usecases/core/i-auth.usecase';
+import { UserModel } from '../../../domain/models/user.model';
 import { AuthFindInputDto } from '../../dtos/auth';
 import { AuthValidateJwtStrategyPresenter } from '../../presenters/auth';
 
@@ -24,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(input: AuthFindInputDto): Promise<any> {
+  async validate(input: AuthFindInputDto): Promise<UserModel> {
     if (!input.id || !input.email) {
       throw new UnauthorizedException('認証に失敗しました');
     }

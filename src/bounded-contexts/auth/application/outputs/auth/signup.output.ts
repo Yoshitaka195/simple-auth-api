@@ -1,15 +1,11 @@
+import { UserModel } from '../../../domain/models/user.model';
 import { BaseOutput } from '../i-output-base.dto';
 
 export class SignupOutput extends BaseOutput {
   /**
-   * ユーザー名
+   * ユーザー
    */
-  readonly name: string | null;
-
-  /**
-   * メールアドレス
-   */
-  readonly email: string | null;
+  readonly user: UserModel | null;
 
   /**
    * アクセストークン
@@ -23,14 +19,12 @@ export class SignupOutput extends BaseOutput {
 
   constructor(args: {
     isSuccess: boolean;
-    name?: string;
-    email?: string;
+    user?: UserModel;
     accessToken?: string;
     isErrorAlreadyExists?: boolean;
   }) {
     super(args.isSuccess);
-    this.name = args.name ?? null;
-    this.email = args.email ?? null;
+    this.user = args.user ?? null;
     this.accessToken = args.accessToken ?? null;
     this.isErrorAlreadyExists = args.isErrorAlreadyExists ?? false;
   }

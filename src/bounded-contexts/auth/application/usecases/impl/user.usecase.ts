@@ -35,7 +35,7 @@ export class UserUsecase implements IUserUsecase {
   }
 
   async update(command: UserUpdateCommand): Promise<UserUpdateOutput> {
-    const { id, name } = command;
+    const { id, nickname, comment } = command;
 
     // ユーザーの取得
     const user = await this.userRepository.findById(id);
@@ -46,8 +46,8 @@ export class UserUsecase implements IUserUsecase {
       });
     }
 
-    // ユーザー名の更新
-    const updatedUser = user.update({name});
+    // ニックネームの更新
+    const updatedUser = user.update({ nickname, comment });
   
     // ユーザー情報を保存
     const savedUser = await this.userRepository.update(updatedUser);
@@ -71,7 +71,7 @@ export class UserUsecase implements IUserUsecase {
     }
 
     // ユーザーのメールアドレスを削除扱いとする
-    const markedDeleteUser = user.markEmailAsDeleted();
+    const markedDeleteUser = user.markAsDeleted();
 
     // ユーザーの削除
     await this.userRepository.delete(markedDeleteUser);

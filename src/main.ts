@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -15,6 +16,17 @@ export async function bootstrap(): Promise<void> {
   const nestApp = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(instance),
+  );
+
+  // const reflector = nestApp.get(Reflector);
+  // nestApp.useGlobalFilters(new ValidationExceptionFilter(reflector));
+
+  nestApp.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
   );
 
   nestApp.use(healthCheck);

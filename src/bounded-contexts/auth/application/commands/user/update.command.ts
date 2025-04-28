@@ -2,18 +2,25 @@ export class UpdateCommand {
   /**
    * ユーザーID
    */
-  readonly id: number;
+  readonly id: string;
 
   /**
-   * 名前
+   * ニックネーム
    */
-  readonly name: string;
+  readonly nickname: string | undefined;
+
+  /**
+   * コメント
+   */
+  readonly comment: string | undefined;
 
   constructor(args: {
-    id: number;
-    name: string;
+    id: string;
+    nickname?: string | undefined;
+    comment?: string | undefined;
   }) {
     this.id = args.id;
-    this.name = args.name;
+    this.nickname = args.nickname;
+    this.comment = args.comment;
   }
 }

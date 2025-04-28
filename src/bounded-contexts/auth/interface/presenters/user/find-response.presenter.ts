@@ -1,27 +1,37 @@
-import { InternalServerErrorException, NotFoundException, } from "@nestjs/common";
-import { UserFindOutput } from "../../../application/outputs/user";
+import { InternalServerErrorException } from '@nestjs/common';
+import { UserFindOutput } from '../../../application/outputs/user';
 
-
-export class FindResponsePresenter  {
-
+export class FindResponsePresenter {
   readonly output: UserFindOutput;
 
-  constructor(
-    private readonly outputDto: UserFindOutput,
-  ) {
-    this.outputDto =  outputDto;
+  constructor(private readonly outputDto: UserFindOutput) {
+    this.outputDto = outputDto;
   }
 
-  convertToResponse(): UserFindOutput {
+  convertToResponse() {
     if (this.outputDto.isErrorNotFound) {
-      throw new NotFoundException('対象のユーザーが見つかりません');
+      return { message: 'No user found' };
     }
 
     if (!this.outputDto.isSuccess) {
-      throw new InternalServerErrorException('ユーザー情報の取得に失敗しました');
+      throw new InternalServerErrorException(
+        'Failed to retrieve user information',
+      );
     }
 
-    return this.outputDto;
-  }
+    if (!this.outputDto.user) {
+      throw new InternalServerErrorException(
+        'Failed to retrieve user information',
+      );
+    }
 
+    return {
+      message: 'User details by user_id',
+      user: {
+        user_id: this.outputDto.user.id,
+        nickname: this.outputDto.user.nickname,
+        comment: this.outputDto.user.comment ?? undefined,
+      },
+    };
+  }
 }

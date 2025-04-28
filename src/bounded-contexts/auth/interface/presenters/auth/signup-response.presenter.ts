@@ -1,27 +1,35 @@
-import { UnauthorizedException } from "@nestjs/common";
-import { AuthSignupOutput } from "../../../application/outputs/auth";
+import { UnauthorizedException } from '@nestjs/common';
+import { AuthSignupOutput } from '../../../application/outputs/auth';
 
-
-export class SignupResponsePresenter  {
-
+export class SignupResponsePresenter {
   readonly output: AuthSignupOutput;
 
-  constructor(
-    private readonly outputDto: AuthSignupOutput,
-  ) {
-    this.outputDto =  outputDto;
+  constructor(private readonly outputDto: AuthSignupOutput) {
+    this.outputDto = outputDto;
   }
 
-  convertToResponse(): AuthSignupOutput {
+  convertToResponse() {
     if (this.outputDto.isErrorAlreadyExists) {
-      throw new UnauthorizedException('このメールアドレスは既に登録されています');
+      return {
+        message: 'Account creation failed',
+        cause: 'Already same user_id is used',
+      };
     }
 
     if (!this.outputDto.isSuccess) {
       throw new UnauthorizedException('新規登録に失敗しました');
     }
 
-    return this.outputDto;
-  }
+    if (!this.outputDto.user) {
+      throw new UnauthorizedException('新規登録に失敗しました');
+    }
 
+    return {
+      message: 'Account successfully created',
+      user: {
+        user_id: this.outputDto.user.id,
+        nickname: this.outputDto.user.nickname,
+      },
+    };
+  }
 }

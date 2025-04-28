@@ -5,9 +5,9 @@ import { UsecaseModule } from '../../application/usecases/index.usecase.module';
 import { RepositoryModule } from '../../infrastructure/repositories/index.repository.module';
 import { StrategyModule } from '../strategies/index.strategy.module';
 import { AuthController } from './impl/auth.controller';
-import { UserController } from './impl/user.controller';
+import { UsersController } from './impl/users.controller';
 
-const controllers = [AuthController, UserController];
+const controllers = [AuthController, UsersController];
 
 @Module({
   imports: [UsecaseModule, StrategyModule, PassportModule, RepositoryModule],

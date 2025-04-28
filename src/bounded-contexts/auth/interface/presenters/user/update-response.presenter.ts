@@ -1,27 +1,38 @@
-import { InternalServerErrorException, NotFoundException, } from "@nestjs/common";
-import { UserUpdateOutput } from "../../../application/outputs/user";
+import { InternalServerErrorException } from '@nestjs/common';
+import { UserUpdateOutput } from '../../../application/outputs/user';
 
-
-export class UpdateResponsePresenter  {
-
+export class UpdateResponsePresenter {
   readonly output: UserUpdateOutput;
 
-  constructor(
-    private readonly outputDto: UserUpdateOutput,
-  ) {
-    this.outputDto =  outputDto;
+  constructor(private readonly outputDto: UserUpdateOutput) {
+    this.outputDto = outputDto;
   }
 
-  convertToResponse(): UserUpdateOutput {
+  convertToResponse() {
     if (this.outputDto.isErrorNotFound) {
-      throw new NotFoundException('対象のユーザーが見つかりません');
+      return { message: 'No user found' };
     }
 
     if (!this.outputDto.isSuccess) {
-      throw new InternalServerErrorException('ユーザー情報の更新に失敗しました');
+      throw new InternalServerErrorException(
+        'Failed to update user information',
+      );
     }
 
-    return this.outputDto;
-  }
+    if (!this.outputDto.user) {
+      throw new InternalServerErrorException(
+        'Failed to update user information',
+      );
+    }
 
+    return {
+      message: 'User successfully updated',
+      user: [
+        {
+          nickname: this.outputDto.user.nickname,
+          comment: this.outputDto.user.comment,
+        },
+      ],
+    };
+  }
 }

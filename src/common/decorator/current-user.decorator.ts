@@ -11,7 +11,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export type CurrentUserDto = {
-  id: number;
+  id: string;
 };
 
 export const CurrentUser = createParamDecorator(
