@@ -43,9 +43,9 @@ export class UserRepository implements IUserRepository {
     return this.convertToModel(updatedUser);
   }
 
-  async delete(user: UserModel): Promise<void> {
+  async delete(id: string, user: UserModel): Promise<void> {
     await this.prisma.user.update({
-      where: { userId: user.id, deletedAt: null },
+      where: { userId: id, deletedAt: null },
       data: { userId: user.id, deletedAt: new Date() },
     });
   }

@@ -71,7 +71,7 @@ export class UserUsecase implements IUserUsecase {
     const markedDeleteUser = user.markAsDeleted();
 
     // ユーザーの削除
-    await this.userRepository.delete(markedDeleteUser);
+    await this.userRepository.delete(id, markedDeleteUser);
 
     return new UserDeleteOutput({
       isSuccess: true,
