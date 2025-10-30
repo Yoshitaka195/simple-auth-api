@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("RAKBIL_TEST_DB_URL")
+  url      = env("TEST_DB_URL")
 }
 
 model User {
